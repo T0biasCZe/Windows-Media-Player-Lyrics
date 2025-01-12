@@ -27,27 +27,23 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.update = new System.Windows.Forms.Timer(this.components);
 			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-			this.client_id = new System.Windows.Forms.TextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.button1 = new System.Windows.Forms.Button();
-			this.checkBox_sendMediaInfo = new System.Windows.Forms.CheckBox();
-			this.checkBox_showconsole = new System.Windows.Forms.CheckBox();
-			this.checkBox_userpc = new System.Windows.Forms.CheckBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.numericUpDown_retryattempts = new System.Windows.Forms.NumericUpDown();
-			this.button_settings = new System.Windows.Forms.Button();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.checkBox_dontautohide = new System.Windows.Forms.CheckBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+			this.label3 = new Discord_WMP.LabelNoAa();
+			this.label4 = new Discord_WMP.LabelNoAa();
+			this.label5 = new Discord_WMP.LabelNoAa();
+			this.label6 = new Discord_WMP.LabelNoAa();
+			this.label2 = new Discord_WMP.LabelNoAa();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.label7 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown_retryattempts)).BeginInit();
+			this.label7 = new Discord_WMP.LabelNoAa();
+			this.label8 = new Discord_WMP.LabelNoAa();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.richTextBox_lyrics = new System.Windows.Forms.RichTextBox();
+			this.label_song = new Discord_WMP.LabelNoAa();
+			this.label_album = new Discord_WMP.LabelNoAa();
+			this.label_kapela = new Discord_WMP.LabelNoAa();
+			this.label_vybral = new Discord_WMP.LabelNoAa();
+			this.label_tlyrics = new Discord_WMP.LabelNoAa();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// update
@@ -62,99 +58,12 @@
 			this.notifyIcon1.Text = "notifyIcon1";
 			this.notifyIcon1.Visible = true;
 			// 
-			// client_id
-			// 
-			this.client_id.Location = new System.Drawing.Point(8, 8);
-			this.client_id.Name = "client_id";
-			this.client_id.Size = new System.Drawing.Size(176, 20);
-			this.client_id.TabIndex = 0;
-			this.client_id.TextChanged += new System.EventHandler(this.client_id_TextChanged);
-			// 
 			// panel1
 			// 
-			this.panel1.Location = new System.Drawing.Point(0, 130);
+			this.panel1.Location = new System.Drawing.Point(224, 152);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(192, 96);
 			this.panel1.TabIndex = 6;
-			// 
-			// button1
-			// 
-			this.button1.FlatAppearance.BorderSize = 4;
-			this.button1.Location = new System.Drawing.Point(134, 104);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(32, 16);
-			this.button1.TabIndex = 7;
-			this.button1.Text = ";;;\r\n\r\n";
-			this.toolTip1.SetToolTip(this.button1, "Show album art manager");
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// checkBox_sendMediaInfo
-			// 
-			this.checkBox_sendMediaInfo.AutoSize = true;
-			this.checkBox_sendMediaInfo.Location = new System.Drawing.Point(0, 232);
-			this.checkBox_sendMediaInfo.Name = "checkBox_sendMediaInfo";
-			this.checkBox_sendMediaInfo.Size = new System.Drawing.Size(115, 30);
-			this.checkBox_sendMediaInfo.TabIndex = 8;
-			this.checkBox_sendMediaInfo.Text = "Send WMP media \r\ninfo to Windows";
-			this.checkBox_sendMediaInfo.UseVisualStyleBackColor = true;
-			this.checkBox_sendMediaInfo.CheckedChanged += new System.EventHandler(this.checkBox_changed);
-			// 
-			// checkBox_showconsole
-			// 
-			this.checkBox_showconsole.AutoSize = true;
-			this.checkBox_showconsole.Location = new System.Drawing.Point(0, 280);
-			this.checkBox_showconsole.Name = "checkBox_showconsole";
-			this.checkBox_showconsole.Size = new System.Drawing.Size(91, 17);
-			this.checkBox_showconsole.TabIndex = 9;
-			this.checkBox_showconsole.Text = "show console";
-			this.checkBox_showconsole.UseVisualStyleBackColor = true;
-			this.checkBox_showconsole.CheckedChanged += new System.EventHandler(this.checkBox_changed);
-			// 
-			// checkBox_userpc
-			// 
-			this.checkBox_userpc.AutoSize = true;
-			this.checkBox_userpc.Location = new System.Drawing.Point(0, 306);
-			this.checkBox_userpc.Name = "checkBox_userpc";
-			this.checkBox_userpc.Size = new System.Drawing.Size(109, 17);
-			this.checkBox_userpc.TabIndex = 10;
-			this.checkBox_userpc.Text = "Use Discord RPC";
-			this.checkBox_userpc.UseVisualStyleBackColor = true;
-			this.checkBox_userpc.CheckedChanged += new System.EventHandler(this.checkBox_changed);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(5, 326);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(70, 13);
-			this.label1.TabIndex = 13;
-			this.label1.Text = "retry attemps:";
-			// 
-			// numericUpDown_retryattempts
-			// 
-			this.numericUpDown_retryattempts.Location = new System.Drawing.Point(81, 323);
-			this.numericUpDown_retryattempts.Name = "numericUpDown_retryattempts";
-			this.numericUpDown_retryattempts.Size = new System.Drawing.Size(66, 20);
-			this.numericUpDown_retryattempts.TabIndex = 14;
-			this.numericUpDown_retryattempts.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
-			// button_settings
-			// 
-			this.button_settings.FlatAppearance.BorderSize = 4;
-			this.button_settings.Location = new System.Drawing.Point(172, 104);
-			this.button_settings.Name = "button_settings";
-			this.button_settings.Size = new System.Drawing.Size(22, 20);
-			this.button_settings.TabIndex = 15;
-			this.button_settings.Text = "⚙";
-			this.button_settings.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.toolTip1.SetToolTip(this.button_settings, "Show settings menu");
-			this.button_settings.UseVisualStyleBackColor = true;
-			this.button_settings.Click += new System.EventHandler(this.button_settings_Click);
 			// 
 			// label3
 			// 
@@ -192,17 +101,6 @@
 			this.label6.TabIndex = 20;
 			this.label6.Text = "label6";
 			// 
-			// checkBox_dontautohide
-			// 
-			this.checkBox_dontautohide.AutoSize = true;
-			this.checkBox_dontautohide.Location = new System.Drawing.Point(0, 354);
-			this.checkBox_dontautohide.Name = "checkBox_dontautohide";
-			this.checkBox_dontautohide.Size = new System.Drawing.Size(70, 17);
-			this.checkBox_dontautohide.TabIndex = 21;
-			this.checkBox_dontautohide.Text = "dont hide";
-			this.checkBox_dontautohide.UseVisualStyleBackColor = true;
-			this.checkBox_dontautohide.CheckedChanged += new System.EventHandler(this.checkBox_changed);
-			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
@@ -211,17 +109,6 @@
 			this.label2.Size = new System.Drawing.Size(117, 13);
 			this.label2.TabIndex = 22;
 			this.label2.Text = "Debug values:  (ignore)";
-			// 
-			// linkLabel1
-			// 
-			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(5, 379);
-			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(89, 13);
-			this.linkLabel1.TabIndex = 23;
-			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "linkLabel_version";
-			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
 			// 
 			// toolTip1
 			// 
@@ -245,50 +132,112 @@
 			this.label8.TabIndex = 25;
 			this.label8.Text = "label8";
 			// 
-			// linkLabel2
+			// pictureBox1
 			// 
-			this.linkLabel2.AutoSize = true;
-			this.linkLabel2.Location = new System.Drawing.Point(16, 264);
-			this.linkLabel2.Name = "linkLabel2";
-			this.linkLabel2.Size = new System.Drawing.Size(55, 13);
-			this.linkLabel2.TabIndex = 26;
-			this.linkLabel2.TabStop = true;
-			this.linkLabel2.Text = "linkLabel2";
-			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+			this.pictureBox1.Location = new System.Drawing.Point(16, 16);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(184, 184);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox1.TabIndex = 26;
+			this.pictureBox1.TabStop = false;
+			// 
+			// richTextBox_lyrics
+			// 
+			this.richTextBox_lyrics.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.richTextBox_lyrics.Location = new System.Drawing.Point(16, 296);
+			this.richTextBox_lyrics.Name = "richTextBox_lyrics";
+			this.richTextBox_lyrics.Size = new System.Drawing.Size(184, 336);
+			this.richTextBox_lyrics.TabIndex = 27;
+			this.richTextBox_lyrics.Text = "";
+			// 
+			// label_song
+			// 
+			this.label_song.AutoSize = true;
+			this.label_song.BackColor = System.Drawing.Color.Transparent;
+			this.label_song.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_song.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+			this.label_song.Location = new System.Drawing.Point(16, 200);
+			this.label_song.Name = "label_song";
+			this.label_song.Size = new System.Drawing.Size(92, 21);
+			this.label_song.TabIndex = 28;
+			this.label_song.Text = "label_song";
+			// 
+			// label_album
+			// 
+			this.label_album.AutoSize = true;
+			this.label_album.BackColor = System.Drawing.Color.Transparent;
+			this.label_album.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_album.ForeColor = System.Drawing.SystemColors.HotTrack;
+			this.label_album.Location = new System.Drawing.Point(16, 224);
+			this.label_album.Name = "label_album";
+			this.label_album.Size = new System.Drawing.Size(71, 15);
+			this.label_album.TabIndex = 29;
+			this.label_album.Text = "label_album";
+			// 
+			// label_kapela
+			// 
+			this.label_kapela.AutoSize = true;
+			this.label_kapela.BackColor = System.Drawing.Color.Transparent;
+			this.label_kapela.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_kapela.ForeColor = System.Drawing.SystemColors.HotTrack;
+			this.label_kapela.Location = new System.Drawing.Point(16, 240);
+			this.label_kapela.Name = "label_kapela";
+			this.label_kapela.Size = new System.Drawing.Size(71, 15);
+			this.label_kapela.TabIndex = 30;
+			this.label_kapela.Text = "label_kapela";
+			// 
+			// label_vybral
+			// 
+			this.label_vybral.AutoSize = true;
+			this.label_vybral.BackColor = System.Drawing.Color.Transparent;
+			this.label_vybral.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_vybral.ForeColor = System.Drawing.SystemColors.HotTrack;
+			this.label_vybral.Location = new System.Drawing.Point(16, 256);
+			this.label_vybral.Name = "label_vybral";
+			this.label_vybral.Size = new System.Drawing.Size(69, 15);
+			this.label_vybral.TabIndex = 31;
+			this.label_vybral.Text = "label_vybral";
+			// 
+			// label_tlyrics
+			// 
+			this.label_tlyrics.AutoSize = true;
+			this.label_tlyrics.Font = new System.Drawing.Font("Comic Sans MS", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_tlyrics.ForeColor = System.Drawing.Color.Blue;
+			this.label_tlyrics.Location = new System.Drawing.Point(16, 288);
+			this.label_tlyrics.Name = "label_tlyrics";
+			this.label_tlyrics.Size = new System.Drawing.Size(92, 19);
+			this.label_tlyrics.TabIndex = 32;
+			this.label_tlyrics.Text = "TLyric3000™";
+			this.label_tlyrics.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(193, 123);
-			this.Controls.Add(this.linkLabel2);
+			this.ClientSize = new System.Drawing.Size(212, 642);
+			this.Controls.Add(this.label_tlyrics);
+			this.Controls.Add(this.label_vybral);
+			this.Controls.Add(this.label_kapela);
+			this.Controls.Add(this.label_album);
+			this.Controls.Add(this.label_song);
+			this.Controls.Add(this.richTextBox_lyrics);
+			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.label7);
-			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.checkBox_dontautohide);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.button_settings);
-			this.Controls.Add(this.numericUpDown_retryattempts);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.checkBox_userpc);
-			this.Controls.Add(this.checkBox_showconsole);
-			this.Controls.Add(this.checkBox_sendMediaInfo);
-			this.Controls.Add(this.button1);
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.client_id);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "Form1";
-			this.Text = "WMP RPC";
-			this.Deactivate += new System.EventHandler(this.Form1_Deactivate);
+			this.Text = "WMP Lyrics";
 			this.Load += new System.EventHandler(this.Form1_Load);
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown_retryattempts)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -297,26 +246,22 @@
         #endregion
         private System.Windows.Forms.Timer update;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.TextBox client_id;
-        private System.Windows.Forms.Button button1;
 		public System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.CheckBox checkBox_sendMediaInfo;
-		private System.Windows.Forms.CheckBox checkBox_showconsole;
-		private System.Windows.Forms.CheckBox checkBox_userpc;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.NumericUpDown numericUpDown_retryattempts;
-		private System.Windows.Forms.Button button_settings;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.CheckBox checkBox_dontautohide;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.LinkLabel linkLabel1;
+		private LabelNoAa label3;
+		private LabelNoAa label4;
+		private LabelNoAa label5;
+		private LabelNoAa label6;
+		private LabelNoAa label2;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.LinkLabel linkLabel2;
+		private LabelNoAa label7;
+		private LabelNoAa label8;
+		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.RichTextBox richTextBox_lyrics;
+		private LabelNoAa label_song;
+		private LabelNoAa label_album;
+		private LabelNoAa label_kapela;
+		private LabelNoAa label_vybral;
+		private LabelNoAa label_tlyrics;
 	}
 }
 

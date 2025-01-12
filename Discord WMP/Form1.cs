@@ -14,8 +14,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DiscordRPC;
-using DiscordRPC.Logging;
 using Windows.Media;
 using Windows.Media.Playback;
 using WMPLib;
@@ -26,37 +24,33 @@ namespace Discord_WMP {
 
         const string version = "v2.2.4b";
         const string date = "19.10.24";
-		string versionn = $"{Discord_WMP.Properties.Resources.CurrentCommit.Trim()} {version} {date}";
 
-		public static string url = "https://github.com/T0biasCZe/Windows-Media-Player-Discord-RPC/";
+        public static string url = "https://github.com/T0biasCZe/Windows-Media-Player-Discord-RPC/";
 
         //public RemotedWindowsMediaPlayer rm = new RemotedWindowsMediaPlayer();
         public RemotedWindowsMediaPlayer rm;
         public bool wmpConnected = false;
 
-		//RemotedWindowsMediaPlayer rm;
-		private bool show_author;
+        //RemotedWindowsMediaPlayer rm;
+        private bool show_author;
         private bool show_title;
         private bool show_album;
         private bool show_albumart;
         private bool show_progressbar;
         private bool send_media_info;
-        private bool show_console;
-        private bool use_rpc;
-        public DiscordRpcClient client;
-        public static int random_port = 42565;
+        private bool show_console = true;
         public static bool albummanageropen = false;
 
-		[DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
 
-		const int SW_HIDE = 0;
+        const int SW_HIDE = 0;
         const int SW_SHOW = 5;
         string playeddata = "played data:";
         private void SmoothingText_Paint(object sender, PaintEventArgs e) {
@@ -69,93 +63,9 @@ namespace Discord_WMP {
         }
 
         public Form1() {
-            //check if app is already running by sending http request to "localhost:42565/alive"
-            bool appAlreadyRunning = false;
-            try {
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:42565/alive");
-				request.Timeout = 2000;
-				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-				if(response.StatusCode == HttpStatusCode.OK) {
-                    appAlreadyRunning = true;
-				}
-			}
-			catch(WebException) {
 
-			}
-            if(!appAlreadyRunning) { //app unresponsive or not running, so kill it
-                Process[] processes = Process.GetProcessesByName("Discord WMP");
-				foreach(Process process in processes) {
-                    if(process.Id == Process.GetCurrentProcess().Id) continue;
-					process.Kill();
-				}
-            }
-
-            if(appAlreadyRunning) {
-                if(Environment.GetCommandLineArgs().Contains("getdata")){
-                    //send http request to "localhost:42565/getdata" to get data
-					HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:42565/info");
-					request.Timeout = 1000;
-					HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-					if(response.StatusCode == HttpStatusCode.OK) {
-						//get data from response
-						Stream dataStream = response.GetResponseStream();
-						StreamReader reader = new StreamReader(dataStream);
-						string responseFromServer = reader.ReadToEnd();
-						//send data to console
-						Console.WriteLine(responseFromServer);
-						//close response
-						response.Close();
-						//close app
-						Environment.Exit(0);
-					}
-                }
-                else Environment.Exit(0);
-            }
-
-            if(Settings1.Default.first_setup) {
-                loadingsettings = true;
-                DialogResult dialog_userpc = MessageBox.Show("Do you want to put WMP play data into Discord Rich presence?\n(Recommended YES if you have Discord installed)", "Initial setup", MessageBoxButtons.YesNo);
-                if(dialog_userpc == DialogResult.Yes) {
-                    use_rpc = true;
-                    Settings1.Default.show_discord = true;
-                }
-                else if(dialog_userpc == DialogResult.No) {
-                    use_rpc = false;
-                    Settings1.Default.show_discord = false;
-                }
-                DialogResult dialog_console = MessageBox.Show("Do you want to bridge WMP play data and Windows 10 Media Info?\nThis will allow you to use keyboard media keys and allow showing playing music for example on Wallpaper Engine\n(Recommended YES if not sure)", "Initial setup", MessageBoxButtons.YesNo);
-                loadingsettings = false;
-                Settings1.Default.first_setup = false;
-                Settings1.Default.Save();
-            }
-
-			var handle = GetConsoleWindow();
-			// Show console during boot
-			ShowWindow(handle, SW_SHOW);
-
-			/*Random random = new Random();
-            bool isAvailable = false;
-			while(isAvailable == false) {
-				random_port = random.Next(49152, 65535);
-				//check if port is being used and if it is, generate new one
-				IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-				TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
-
-				foreach(TcpConnectionInformation tcpi in tcpConnInfoArray) {
-					if(tcpi.LocalEndPoint.Port == random_port) {
-						isAvailable = false;
-                        continue;
-					}
-                    else {
-						isAvailable = true;
-                    }
-				}
-			}*/
-			Console.SetWindowSize(50, 15);
+            Console.SetWindowSize(50, 15);
             InitializeComponent();
-
-			linkLabel2.Text = $"http://localhost:{random_port}/";
-			linkLabel2.Links.Add(0, linkLabel2.Text.Length, $"http://localhost:{random_port}/");
 
             this.FormClosing += Form1_Closing;
             //change console size
@@ -166,136 +76,76 @@ namespace Discord_WMP {
             notifyIcon1.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => Application.Exit();
             notifyIcon1.MouseClick += (s, e) => { if(e.Button == MouseButtons.Left) RestoreForm(); };
 
-            linkLabel1.Text = versionn;
-            linkLabel1.Links.Add(0, versionn.Length, url);
 
             //run function settingsload when Settings1 finish loading
-            settingsload();
-			handle = GetConsoleWindow();
-			// Show console during boot
-			ShowWindow(handle, SW_SHOW);
+            //settingsload();
+            var handle = GetConsoleWindow();
+            handle = GetConsoleWindow();
+            // Show console during boot
+            ShowWindow(handle, SW_SHOW);
 
-			Console.WriteLine("Loading app, please wait:)");
+            Console.WriteLine("Loading app, please wait:)");
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SmoothingText_Paint);
         }
-		private void Form1_Deactivate(object sender, EventArgs e) {
-			//check if console is active
-			var handle = GetConsoleWindow();
-			var foregroundHandle = GetForegroundWindow();
-			bool consoleopen = (foregroundHandle == handle);
-			if(!albummanageropen && !consoleopen && !checkBox_dontautohide.Checked) {
-				Hide();
 
-				// Hide
-				ShowWindow(handle, SW_HIDE);
-				notifyIcon1.Visible = true;
-				notifyIcon1.BalloonTipText = "Veemo";
-				notifyIcon1.Text = "Windows Media Player Discord RPC";
-				notifyIcon1.ShowBalloonTip(1000);
-			}
-		}
-		private void RestoreForm() {
-			if(show_console) {
-				var handle = GetConsoleWindow();
-				ShowWindow(handle, SW_SHOW);
-			}
-			Show();
-			WindowState = FormWindowState.Normal;
-			notifyIcon1.Visible = false;
-		}
-		protected override void OnFormClosing(FormClosingEventArgs e) {
-			notifyIcon1.Dispose();
-			base.OnFormClosing(e);
-			systemMediaControls._run_server = false;
-		}
-		private void Form1_Load(object sender, EventArgs e) {
-			Console.WriteLine("veemo");
-			albummanager.LoadListFromCsv();
-			if(!show_console) {
-				var handle = GetConsoleWindow();
-				// Show console during boot
-				ShowWindow(handle, SW_HIDE);
-			}
-		}
+        private void RestoreForm() {
+            if(show_console) {
+                var handle = GetConsoleWindow();
+                ShowWindow(handle, SW_SHOW);
+            }
+            Show();
+            WindowState = FormWindowState.Normal;
+            notifyIcon1.Visible = false;
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e) {
+            notifyIcon1.Dispose();
+            base.OnFormClosing(e);
+        }
+        private void Form1_Load(object sender, EventArgs e) {
+            Console.WriteLine("veemo");
+            if(!show_console) {
+                var handle = GetConsoleWindow();
+                // Show console during boot
+                ShowWindow(handle, SW_HIDE);
+            }
+        }
 
-		private void client_id_TextChanged(object sender, EventArgs e) {
-			//set rpc_id in settings1 to client_id.Text
-			Settings1.Default.RPC_ID = client_id.Text;
-		}
-		private static bool loadingsettings = false;
-		private void settingsload() {
-			loadingsettings = true;
-			show_album = Settings1.Default.show_album;
-			show_albumart = Settings1.Default.show_albumart;
-			show_author = Settings1.Default.show_author;
-			show_progressbar = Settings1.Default.show_progressbar;
-			client_id.Text = Settings1.Default.RPC_ID;
-			show_console = Settings1.Default.show_console;
-			checkBox_showconsole.Checked = show_console;
-			send_media_info = Settings1.Default.send_media_info;
-			checkBox_sendMediaInfo.Checked = send_media_info;
-			use_rpc = Settings1.Default.show_discord;
-			checkBox_userpc.Checked = use_rpc;
-            checkBox_dontautohide.Checked = Settings1.Default.dont_hide;
 
-			Console.WriteLine("loaded settings");
-			loadingsettings = false;
-		}
-		private void Form1_Closing(object sender, FormClosingEventArgs e) {
-			Console.WriteLine("saved settings");
-			//save settings
-			Settings1.Default.Save();
-			//close the console window
-			//get handlr
-			var handle = GetConsoleWindow();
-			Application.Exit();
-		}
+        private static bool loadingsettings = false;
+        private void settingsload() {
+            loadingsettings = true;
+            show_console = Settings1.Default.show_console;
 
-		private void checkBox_changed(object sender, EventArgs e) {
-			//do nothing if settings are loading
-			if(loadingsettings) return;
-			send_media_info = checkBox_sendMediaInfo.Checked;
-			Settings1.Default.send_media_info = send_media_info;
-			show_console = checkBox_showconsole.Checked;
-			Settings1.Default.show_console = show_console;
-			use_rpc = checkBox_userpc.Checked;
-			Settings1.Default.show_discord = use_rpc;
-            Settings1.Default.dont_hide = checkBox_dontautohide.Checked;
+            Console.WriteLine("loaded settings");
+            loadingsettings = false;
+        }
+        private void Form1_Closing(object sender, FormClosingEventArgs e) {
+            Console.WriteLine("saved settings");
+            //save settings
+            Settings1.Default.Save();
+            //close the console window
+            //get handlr
+            var handle = GetConsoleWindow();
+            Application.Exit();
+        }
 
-			var handle = GetConsoleWindow();
-			if(show_console) ShowWindow(handle, SW_SHOW);
-			else ShowWindow(handle, SW_HIDE);
+        private void checkBox_changed(object sender, EventArgs e) {
+            //do nothing if settings are loading
+            if(loadingsettings) return;
+            Settings1.Default.show_console = show_console;
 
-			Console.WriteLine("saved settings");
-			Settings1.Default.Save();
-		}
-		private void button1_Click(object sender, EventArgs e) {
-			//open albumartadder form
-			albummanageropen = true;
-			AlbumArtAdder form = new AlbumArtAdder();
-			form.Show();
-		}
+            var handle = GetConsoleWindow();
+            if(show_console) ShowWindow(handle, SW_SHOW);
+            else ShowWindow(handle, SW_HIDE);
 
-		private void button_resizeBack_Click(object sender, EventArgs e) {
-			this.Height = 160;
-			this.Width = 208;
-		}
-
-		private void button_settings_Click(object sender, EventArgs e) {
-			if(this.Height > 160) {
-				this.Height = 160;
-				this.Width = 208;
-			}
-			else {
-				this.Width = 400;
-				this.Height = 428;
-			}
-		}
-		private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			string URL = ((LinkLabel)sender).Links[0].LinkData.ToString();
-			Console.WriteLine(URL);
-			System.Diagnostics.Process.Start(URL);
-		}
+            Console.WriteLine("saved settings");
+            Settings1.Default.Save();
+        }
+        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            string URL = ((LinkLabel)sender).Links[0].LinkData.ToString();
+            Console.WriteLine(URL);
+            System.Diagnostics.Process.Start(URL);
+        }
 
         public bool ConnectWmp() {
             //check if windows media player is running
@@ -307,7 +157,7 @@ namespace Discord_WMP {
             //check if remotedwindowsmediaplayer is already connected
             if(wmpConnected == false) {
                 Console.WriteLine("WMP found, connecting to it");
-				rm = new RemotedWindowsMediaPlayer();
+                rm = new RemotedWindowsMediaPlayer();
                 rm.Dock = DockStyle.Fill;
                 panel1.Controls.Add(rm);
                 panel1.Refresh();
@@ -316,23 +166,23 @@ namespace Discord_WMP {
             }
             return true;
         }
-		public struct playback_data {
+        public struct playback_data {
             public string title;
-			public string album;
-			public string artist;
+            public string album;
+            public string artist;
             public string audiofilename;
             public string audiofilepath;
 
-			public string lenght;
-			public string position;
-			public double lenght_sec;
-			public double position_sec;
+            public string lenght;
+            public string position;
+            public double lenght_sec;
+            public double position_sec;
             public WMPLib.WMPPlayState play_state;
 
             public string guid;
             public string path;
             public string media_type;
-		}
+        }
         //gets current information from Windows Media Player
         public playback_data Data() {
             playback_data data = new playback_data();
@@ -340,10 +190,10 @@ namespace Discord_WMP {
             // Get the currently playing media information
             int retrycount = 0;
             WMPLib.IWMPPlayer4 player = (WMPLib.IWMPPlayer4)rm.GetOcx();
-            veemo:
+        veemo:
             try {
                 player = ((WMPLib.IWMPPlayer4)rm.GetOcx());
-				var a = player.currentMedia.duration;
+                var a = player.currentMedia.duration;
             }
             catch {
                 Thread.Sleep(20);
@@ -351,11 +201,11 @@ namespace Discord_WMP {
                 ConsoleColor old = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("error trying to read WMP data, retrying");
-				Console.ForegroundColor = old;
-				if(retrycount < numericUpDown_retryattempts.Value) goto veemo;
+                Console.ForegroundColor = old;
+                if(retrycount < 1) goto veemo;
                 else {
-					Console.ForegroundColor = ConsoleColor.Red;
-					playeddata = "Couldnt find WMP";
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    playeddata = "Couldnt find WMP";
                     Console.WriteLine("aborting");
                     Console.ForegroundColor = old;
                     goto abort;
@@ -363,7 +213,7 @@ namespace Discord_WMP {
             }
 
             retrycount = 0;
-            while(retrycount < numericUpDown_retryattempts.Value) {
+            while(retrycount < 1) {
                 try {
                     data.title = player.currentMedia.getItemInfo("Title");
                     data.album = player.currentMedia.getItemInfo("WM/AlbumTitle");
@@ -397,49 +247,28 @@ namespace Discord_WMP {
             return data;
         }
         //displays the current information from Windows Media Player
-		private void debug(playback_data data) {
+        private void debug(playback_data data) {
             label3.Text = "initialized " + initialized.ToString();
             label4.Text = "send_data_lasttime " + send_data_lasttime.ToString();
             label5.Text = "play_state " + data.play_state.ToString();
             label6.Text = "mediatype " + data.media_type;
-			label7.Text = "audiofilename " + data.audiofilename;
-		}
-        public static bool check_discord_running() {
-            //check if executable discord.exe, discordcanary.exe or discordptb.exe is running
-            /*Process[] pname = Process.GetProcessesByName("discord");
-            Process[] pname2 = Process.GetProcessesByName("discordcanary");
-            Process[] pname3 = Process.GetProcessesByName("discordptb");
-            bool discordrunning = !(pname.Length == 0 && pname2.Length == 0 && pname3.Length == 0);*/
-            List<string> discordFileNames = new List<string> { "discord", "discordcanary", "discordptb", "vesktop" };
-			bool discordrunning = false;
-            foreach(string name in discordFileNames) {
-				Process[] pname = Process.GetProcessesByName(name);
-				if(pname.Length != 0) {
-					discordrunning = true;
-					break;
-				}
-			}
-			Console.BackgroundColor = ConsoleColor.Cyan;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Discord running: " + discordrunning);
-            Console.ResetColor();
-            return discordrunning;
+            label7.Text = "audiofilename " + data.audiofilename;
         }
 
-		bool initialized = false;
+        bool initialized = false;
         bool send_data_lasttime = false;
         Stopwatch pause_stopwatch = new Stopwatch();
-		private void update_Tick(object sender, EventArgs e) {
+        private void update_Tick(object sender, EventArgs e) {
             bool wmpConnected = ConnectWmp();
-			if(!wmpConnected) {
+            if(!wmpConnected) {
                 Console.WriteLine("WMP not connected. WMP must be running. (debug: update_Tick() ConnectWmp() returned false))");
-				playeddata = "WMP not connected\nWMP must be running.";
-				this.Refresh();
-				return;
-			}
-			var data = Data();
+                playeddata = "WMP not connected\nWMP must be running.";
+                this.Refresh();
+                return;
+            }
+            var data = Data();
             debug(data);
-            if(data.lenght_sec == -1 || data.position_sec == -1) { 
+            if(data.lenght_sec == -1 || data.position_sec == -1) {
                 playeddata = "Couldnt find WMP";
                 this.Refresh();
             }
@@ -447,180 +276,53 @@ namespace Discord_WMP {
             if(data.play_state == WMPPlayState.wmppsPaused) {
                 //if stopwatch is not running, start it. then if music is paused for more than 5 seconds, stop sending data
                 if(!pause_stopwatch.IsRunning) {
-					pause_stopwatch.Start();
-				}
+                    pause_stopwatch.Start();
+                }
                 if(pause_stopwatch.ElapsedMilliseconds > 30000) {
-					stopped = true;
-				}
-			}
-			else {
-				pause_stopwatch.Reset();
+                    stopped = true;
+                }
+            }
+            else {
+                pause_stopwatch.Reset();
             }
             if(stopped) {
-				playeddata = "Stopped";
-				this.Refresh();
-			}
-			if(send_media_info) {
-                systemMediaControls.update(data, this);
-			}
-            if(use_rpc && !stopped) {
-                if(!check_discord_running()) {
-                    if(initialized) {
-						Console.ForegroundColor = ConsoleColor.Yellow;
-						Console.WriteLine("Discord not running but RPC inited, deiniting");
-						Console.ResetColor();
-						Deinitialize();
-                        initialized = false;
-                    }
-				}
-                else {
-					if(!initialized) {
-						Console.ForegroundColor = ConsoleColor.Yellow;
-						Console.WriteLine("RPC Client not initialized, initing");
-						Initialize();
-						initialized = true;
-						Console.WriteLine("Initialized Discord RPC");
-						Console.ResetColor();
-					}
-				}
-
-				var mil = data.position_sec / data.lenght_sec;
-				var time = data.position + "/" + data.lenght;
-				var playbar = progressbar(mil, 10);
-				if(data.album == "") {
-					//grab string after " - " in title and put it to album
-					data.album = data.title.Substring(data.title.IndexOf(" - ") + 3);
-				}
-				playeddata = data.title + "\n " + data.artist + "\n " + data.album + "\n " + "\n" + time + "\n" + progressbar(mil, 21);
-				string albumart = albummanager.getalbumart(data.album, data.title, data.artist, data.audiofilename);
-				playeddata += "\n" + albumart;
-				this.Refresh();
-
-                if(!initialized) return;
-
-                if(client == null) {
-					Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("client is null");
-					Console.WriteLine("trying to reinitialize");
-                    try {
-                        Initialize();
-                    }
-                    catch(Exception ex){
-						Console.WriteLine("error while initializing client");
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(ex.ToString());
-						Console.ResetColor();
-						return;
-					}
-					Console.ResetColor();
-				}
-
-                client.SetPresence(new RichPresence() {
-                    Details = data.title.Truncate(32).Extend(5),
-                    State = data.artist.Truncate(32).Extend(5),
-                    Assets = new Assets() {
-                        LargeImageKey = albumart,
-                        LargeImageText = data.album.Truncate(32).Extend(5),
-                        SmallImageKey = "wmp_icon"
-                    },
-                    Timestamps = new Timestamps() {
-                        Start = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(data.position_sec)),
-                    },
-                    Buttons = new DiscordRPC.Button[] {
-                        new DiscordRPC.Button() { Label = playbar.Truncate(10), Url = "https://bing.com" }
-                    }
-                });
-                send_data_lasttime = true;
-                Console.WriteLine("set data");
+                playeddata = "Stopped";
+                this.Refresh();
             }
-		    if(send_data_lasttime && initialized && stopped) {
-                client.ClearPresence();
-            }
-            if(!use_rpc && initialized) {
-				client.ClearPresence();
-				Deinitialize();
-				initialized = false;
-			}
+            SetAlbumArt(data);
         }
 
-		bool Initialize() {
-            Console.BackgroundColor = ConsoleColor.Cyan;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Initialize() ran");
-            Console.ResetColor();
-
-            if(client_id.Text.Length <= 8) {
-                Console.WriteLine("invalid client id");
-				return false;
+        public void SetAlbumArt(playback_data data) {
+            string albumartpath = Path.GetDirectoryName(Application.ExecutablePath) + "\\" + "noalbumart2.png";
+            string guid = data.guid;
+            Console.WriteLine("guid: " + guid);
+            string directory = Path.GetDirectoryName(data.audiofilepath);
+			string filePathWithoutExtension = Path.GetDirectoryName(data.audiofilepath) + "\\" + Path.GetFileNameWithoutExtension(data.audiofilename);
+            string guidlarge = $"AlbumArt_{guid}_Large.jpg";
+			string guidsmall = $"AlbumArt_{guid}_Small.jpg";
+			if(File.Exists(filePathWithoutExtension + ".png")) {
+                albumartpath = filePathWithoutExtension + ".png";
+                Console.WriteLine("found png album art");
 			}
-            if(client != null) {
-                try {
-                    client.Deinitialize();
-                    client.Dispose();
-                }
-                catch {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error while deinitializing client while initializing client");
-                    Console.ResetColor();
-                }
+            else if(File.Exists(filePathWithoutExtension + ".jpg")) {
+                albumartpath = filePathWithoutExtension + ".jpg";
+				Console.WriteLine("found jpg album art");
+			}
+            else if(File.Exists(directory + $"\\AlbumArt_{guid}_Large.jpg")) {
+                albumartpath = directory + $"\\AlbumArt_{guid}_Large.jpg";
+                Console.WriteLine("found WMP guid album art large");
             }
-            client = new DiscordRpcClient(client_id.Text, -1);
+            else if(File.Exists(directory + $"\\AlbumArt_{guid}_Small.jpg")) {
+                albumartpath = directory + $"\\AlbumArt_{guid}_Small.jpg";
+				Console.WriteLine("found WMP guid album art");
+			}
+            else {
+                Console.WriteLine("no album art found, using default");
+			}
 
-            //Set the logger
-            client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
-
-            //Subscribe to events
-            client.OnReady += (sender, e) => {
-                Console.WriteLine("Received Ready from user {0}", e.User.Username);
-            };
-
-            client.OnPresenceUpdate += (sender, e) => {
-                Console.WriteLine("Received Update! {0}", e.Presence);
-            };
-
-            //Connect to the RPC
-            client.Initialize();
-            return true;
+            pictureBox1.Image = Image.FromFile(albumartpath);
         }
-        void Deinitialize() {
-            client.Deinitialize();
-			client.Dispose();
-		}
-        private string progressbar(double value, int lenght) {
-            string bar = "";
-            int progress = (int)(value * lenght);
-            for(int i = 0; i < lenght; i++) {
-                if(i < progress) {
-                    bar += "█";
-                }
-                else {
-                    bar += "░";
-                }
-            }
-            return bar;
-        }
-        private void checknottoolong(string jedna, string dva, string tri, string ctyri, string pet, string sest) {
-            if(jedna.Length > 32) {
-                Console.WriteLine("title is too long");
-            }
-            if(dva.Length > 32) {
-                Console.WriteLine("album is too long");
-            }
-            if(tri.Length > 32) {
-                Console.WriteLine("artist is too long");
-            }
-            if(ctyri.Length > 32) {
-                Console.WriteLine("lenght is too long");
-            }
-            if(pet.Length > 32) {
-                Console.WriteLine("position is too long");
-            }
-            if(sest.Length > 32) {
-                Console.WriteLine("playbar is too long");
-            }
-
-        }
-	}
+    }
 	//create new class for extension method
 	public static class ExtensionMethods {
         public static string Truncate(this string value, int maxChars) {

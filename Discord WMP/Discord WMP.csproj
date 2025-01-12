@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Discord_WMP</RootNamespace>
     <AssemblyName>Discord WMP</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -104,13 +104,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlbumArtAdder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AlbumArtAdder.Designer.cs">
-      <DependentUpon>AlbumArtAdder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="albummanager.cs" />
     <Compile Include="Component1.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -123,6 +116,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="label_noaa.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remote_WMP_Lib.cs" />
@@ -132,23 +128,14 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings1.settings</DependentUpon>
     </Compile>
-    <Compile Include="systemMediaControls.cs" />
-    <EmbeddedResource Include="AlbumArtAdder.resx">
-      <DependentUpon>AlbumArtAdder.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="Subtitle.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
