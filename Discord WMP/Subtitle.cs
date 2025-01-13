@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Newtonsoft.Json;
+using static Discord_WMP.Subtitle;
 
 namespace Discord_WMP {
 	public class Subtitle {
@@ -9,48 +11,75 @@ namespace Discord_WMP {
 		public List<Segment> Segments { get; set; }
 		public string WholeText { get; set; }
 
-		public string GetFormattedForRichTextBox(TimeSpan currentTime) {
+		int oldCurrentSegmentIndex = -1;
+		public string GetFormattedForRichTextBox(double currentTime) {
 			StringBuilder formattedText = new StringBuilder();
-			bool currentSubtitleFound = false;
+			formattedText.Append(@"{\rtf1\ansi\deff0{\fonttbl{\f0 Arial;}}"); // RTF header with font table
 
+			bool currentSubtitleFound = false;
+			int currentSegmentIndex = -1;
 			for(int i = 0; i < Segments.Count; i++) {
 				var segment = Segments[i];
 				if(segment.Start <= currentTime && segment.End >= currentTime) {
+					currentSegmentIndex = i;
+					break;
+				}
+			}
+			if(currentSegmentIndex == -1) currentSegmentIndex = oldCurrentSegmentIndex;
+			oldCurrentSegmentIndex = currentSegmentIndex;
+
+			int start = Math.Max(0, currentSegmentIndex - 1);
+
+			for(int i = start; i < Segments.Count; i++) {
+				var segment = Segments[i];
+
+				if((segment.Start <= currentTime && segment.End >= currentTime) || i == currentSegmentIndex) {
 					// Current subtitle
-					formattedText.Append(@"{\rtf1\ansi\deff0{\fonttbl{\f0 Arial;}}");
 					formattedText.Append(@"\fs24\b "); // 12pt font, bold
-					formattedText.Append(segment.Text);
+					formattedText.Append(EscapeRtf(segment.Text));
 					formattedText.Append(@"\b0\fs18\par "); // Reset to 9pt font
 					currentSubtitleFound = true;
 				}
 				else if(currentSubtitleFound) {
 					// Future subtitles
 					formattedText.Append(@"\fs18 "); // 9pt font
-					formattedText.Append(segment.Text);
+					formattedText.Append(EscapeRtf(segment.Text));
 					formattedText.Append(@"\par ");
 				}
 				else {
 					// Previous subtitles
-					formattedText.Append(@"\fs18 "); // 9pt font
-					formattedText.Append(segment.Text);
+					formattedText.Append(@"\fs16 "); // 9pt font
+					formattedText.Append(EscapeRtf(segment.Text));
 					formattedText.Append(@"\par ");
 				}
 			}
 
-			formattedText.Append(@"}");
+			formattedText.Append("}"); // Closing the RTF group
+			//Console.WriteLine(formattedText.ToString());
 			return formattedText.ToString();
 		}
 
+		// Helper method to escape special RTF characters
+		private string EscapeRtf(string text) {
+			if(string.IsNullOrEmpty(text)) return string.Empty;
+			return text.Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
+		}
+
 		public static Subtitle LoadFromJson(string json) {
-			return JsonConvert.DeserializeObject<Subtitle>(json, new JsonSerializerSettings {
-				MissingMemberHandling = MissingMemberHandling.Ignore
-			});
+			CultureInfo culture = new CultureInfo("en-US");
+			culture.NumberFormat.NumberDecimalSeparator = ".";
+
+			var settings = new JsonSerializerSettings();
+			settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+			settings.Culture = culture;
+
+			return JsonConvert.DeserializeObject<Subtitle>(json, settings);
 		}
 	}
 
 	public class Segment {
 		public string Text { get; set; }
-		public TimeSpan Start { get; set; }
-		public TimeSpan End { get; set; }
+		public Double Start { get; set; }
+		public Double End { get; set; }
 	}
 }

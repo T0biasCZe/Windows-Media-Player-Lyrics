@@ -86,7 +86,9 @@ namespace Discord_WMP {
 
             Console.WriteLine("Loading app, please wait:)");
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SmoothingText_Paint);
-        }
+
+            pictureBox1.ImageLocation = Path.GetDirectoryName(Application.ExecutablePath) + "\\" + "noalbumart2.png";
+		}
 
         private void RestoreForm() {
             if(show_console) {
@@ -258,7 +260,9 @@ namespace Discord_WMP {
         bool initialized = false;
         bool send_data_lasttime = false;
         Stopwatch pause_stopwatch = new Stopwatch();
-        private void update_Tick(object sender, EventArgs e) {
+        string lastSongPath = "";
+		private void update_Tick(object sender, EventArgs e) {
+            Console.WriteLine("tick");
             bool wmpConnected = ConnectWmp();
             if(!wmpConnected) {
                 Console.WriteLine("WMP not connected. WMP must be running. (debug: update_Tick() ConnectWmp() returned false))");
@@ -289,8 +293,24 @@ namespace Discord_WMP {
                 playeddata = "Stopped";
                 this.Refresh();
             }
-            SetAlbumArt(data);
-        }
+			else {
+				if(data.path != lastSongPath) {
+					lastSongPath = data.path;
+                    SongChanged(data);
+				}
+				playeddata = data.artist + " - " + data.title;
+				this.Refresh();
+			}
+
+            if(subtitle != null) {
+				richTextBox_lyrics.Rtf = subtitle.GetFormattedForRichTextBox(data.position_sec);
+			}
+            else {
+                richTextBox_lyrics.Text = "\nText není pro tuhle písničku k dispozici";
+			}
+
+			HideCaret(richTextBox_lyrics.Handle);
+		}
 
         public void SetAlbumArt(playback_data data) {
             string albumartpath = Path.GetDirectoryName(Application.ExecutablePath) + "\\" + "noalbumart2.png";
@@ -322,7 +342,63 @@ namespace Discord_WMP {
 
             pictureBox1.Image = Image.FromFile(albumartpath);
         }
-    }
+        Subtitle subtitle;
+        public void SongChanged(playback_data data) {
+            Console.WriteLine("song change detected");
+            SetAlbumArt(data);
+            string filepath = data.audiofilepath;
+			//check if json file with the same name as the audio file exists
+			string jsonpath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".json";
+            if(File.Exists(jsonpath)) {
+                Console.WriteLine("found lyrics json");
+				string json = File.ReadAllText(jsonpath);
+				subtitle = Subtitle.LoadFromJson(json);
+				richTextBox_lyrics.Rtf = subtitle.GetFormattedForRichTextBox(data.position_sec);
+			}
+			else {
+				richTextBox_lyrics.Text = data.artist + " - " + data.title;
+			}
+
+            label_song.Text = data.title;
+			label_kapela.Text = data.artist;
+			label_album.Text = data.album;
+
+			string txtpath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".txt";
+			if(File.Exists(txtpath)) {
+				Console.WriteLine("found vybirac songu txt");
+				string txt = File.ReadAllText(txtpath);
+				label_vybral.Text = "vybral: " + txt;
+			}
+			else {
+				label_vybral.Text = "";
+			}
+
+		}
+
+		[DllImport("user32.dll")]
+		static extern bool HideCaret(IntPtr hWnd);
+
+		private void Form1_Resize(object sender, EventArgs e) {
+            int width = Math.Min(this.Width, 400);
+            pictureBox1.Width = width - 48;
+            pictureBox1.Height = width - 48;
+
+            int pictureBoxSizeDif = 0 - (216 - pictureBox1.Height);
+
+            label_song.Top = 232 + pictureBoxSizeDif;
+            label_album.Top = 256 + pictureBoxSizeDif;
+			label_kapela.Top = 272 + pictureBoxSizeDif;
+			label_vybral.Top = 288 + pictureBoxSizeDif;
+            label_tlyrics.Top = 312 + pictureBoxSizeDif;
+			richTextBox_lyrics.Top = 320 + pictureBoxSizeDif;
+
+            richTextBox_lyrics.Height = this.Height - 354 - pictureBoxSizeDif;
+
+
+
+
+		}
+	}
 	//create new class for extension method
 	public static class ExtensionMethods {
         public static string Truncate(this string value, int maxChars) {
