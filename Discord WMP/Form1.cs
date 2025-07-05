@@ -367,7 +367,13 @@ namespace Discord_WMP {
             string filepath = data.audiofilepath;
 			//check if json file with the same name as the audio file exists
 			string jsonpath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".json";
-            if(File.Exists(jsonpath)) {
+			string lrcpath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".lrc";
+			if(File.Exists(lrcpath)) {
+				Console.WriteLine("found lyrics lrc");
+				string lrc = File.ReadAllText(lrcpath);
+				subtitle = Subtitle.LoadFromLrc(lrc);
+				richTextBox_lyrics.Rtf = subtitle.GetFormattedForRichTextBox(data.position_sec);
+			} else if(File.Exists(jsonpath)) {
                 Console.WriteLine("found lyrics json");
 				string json = File.ReadAllText(jsonpath);
 				subtitle = Subtitle.LoadFromJson(json);

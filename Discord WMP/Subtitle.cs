@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using static Discord_WMP.Subtitle;
 
 namespace Discord_WMP {
@@ -74,6 +75,46 @@ namespace Discord_WMP {
 			settings.Culture = culture;
 
 			return JsonConvert.DeserializeObject<Subtitle>(json, settings);
+		}
+		public static Subtitle LoadFromLrc(string text) {
+			var segments = new List<Segment>();
+			var lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+			foreach(var line in lines) {
+				// Match [mm:ss.xx] or [mm:ss] at the start of the line
+				var matches = System.Text.RegularExpressions.Regex.Matches(line, @"\[(\d{1,2}):(\d{2})(?:\.(\d{1,2}))?\]");
+				if(matches.Count == 0) continue;
+
+				// The lyric text is after the last timestamp
+				int lastBracket = line.LastIndexOf(']');
+				string lyric = lastBracket >= 0 && lastBracket < line.Length - 1 ? line.Substring(lastBracket + 1).Trim() : "";
+
+				foreach(System.Text.RegularExpressions.Match match in matches) {
+					int min = int.Parse(match.Groups[1].Value);
+					int sec = int.Parse(match.Groups[2].Value);
+					int ms = match.Groups[3].Success ? int.Parse(match.Groups[3].Value.PadRight(2, '0')) * 10 : 0;
+					double start = new TimeSpan(0, 0, min, sec, ms).TotalSeconds;
+
+					segments.Add(new Segment {
+						Start = start,
+						End = start + 5, // Default duration, will be fixed below
+						Text = lyric
+					});
+				}
+			}
+
+			// Sort and set End times to the next Start (except last)
+			segments = segments.OrderBy(s => s.Start).ToList();
+			for(int i = 0; i < segments.Count - 1; i++) {
+				segments[i].End = segments[i + 1].Start;
+			}
+			if(segments.Count > 0)
+				segments[segments.Count - 1].End = segments[segments.Count - 1].Start + 5; // Last segment: 5s duration
+
+			return new Subtitle {
+				Segments = segments,
+				WholeText = string.Join(" ", segments.Select(s => s.Text))
+			};
 		}
 	}
 
