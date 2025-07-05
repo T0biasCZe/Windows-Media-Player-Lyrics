@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discord WMP", "Discord WMP\Discord WMP.csproj", "{512F316B-56C1-4731-8F37-2FC499321879}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistAddedManager", "PlaylistAddedManager\PlaylistAddedManager.csproj", "{1B2EE441-25AE-4393-B2BB-AAE2E7C47DE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{512F316B-56C1-4731-8F37-2FC499321879}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{512F316B-56C1-4731-8F37-2FC499321879}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{512F316B-56C1-4731-8F37-2FC499321879}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B2EE441-25AE-4393-B2BB-AAE2E7C47DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B2EE441-25AE-4393-B2BB-AAE2E7C47DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B2EE441-25AE-4393-B2BB-AAE2E7C47DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B2EE441-25AE-4393-B2BB-AAE2E7C47DE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

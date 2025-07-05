@@ -35,20 +35,20 @@ namespace Discord_WMP {
 
 				if((segment.Start <= currentTime && segment.End >= currentTime) || i == currentSegmentIndex) {
 					// Current subtitle
-					formattedText.Append(@"\fs24\b "); // 12pt font, bold
+					formattedText.Append(@"\fs30\b "); // 15pt font, bold
 					formattedText.Append(EscapeRtf(segment.Text));
-					formattedText.Append(@"\b0\fs18\par "); // Reset to 9pt font
+					formattedText.Append(@"\b0\fs20\par "); // Reset to 10pt font
 					currentSubtitleFound = true;
 				}
 				else if(currentSubtitleFound) {
 					// Future subtitles
-					formattedText.Append(@"\fs18 "); // 9pt font
+					formattedText.Append(@"\fs20 "); // 10pt font
 					formattedText.Append(EscapeRtf(segment.Text));
 					formattedText.Append(@"\par ");
 				}
 				else {
 					// Previous subtitles
-					formattedText.Append(@"\fs16 "); // 9pt font
+					formattedText.Append(@"\fs18 "); // 9pt font
 					formattedText.Append(EscapeRtf(segment.Text));
 					formattedText.Append(@"\par ");
 				}

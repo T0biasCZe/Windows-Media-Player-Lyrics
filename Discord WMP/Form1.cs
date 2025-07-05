@@ -172,6 +172,7 @@ namespace Discord_WMP {
             public string title;
             public string album;
             public string artist;
+            public string helpingArtist;
             public string audiofilename;
             public string audiofilepath;
 
@@ -187,8 +188,9 @@ namespace Discord_WMP {
         }
         //gets current information from Windows Media Player
         public playback_data Data() {
+            //Console.WriteLine("obtaining data");
             playback_data data = new playback_data();
-            data.artist = ""; data.album = ""; data.title = ""; data.lenght = ""; data.position = ""; data.lenght_sec = -1; data.position_sec = -1; data.play_state = WMPLib.WMPPlayState.wmppsStopped; data.guid = ""; data.path = "";
+            data.artist = ""; data.helpingArtist = "";  data.album = ""; data.title = ""; data.lenght = ""; data.position = ""; data.lenght_sec = -1; data.position_sec = -1; data.play_state = WMPLib.WMPPlayState.wmppsStopped; data.guid = ""; data.path = "";
             // Get the currently playing media information
             int retrycount = 0;
             WMPLib.IWMPPlayer4 player = (WMPLib.IWMPPlayer4)rm.GetOcx();
@@ -220,6 +222,7 @@ namespace Discord_WMP {
                     data.title = player.currentMedia.getItemInfo("Title");
                     data.album = player.currentMedia.getItemInfo("WM/AlbumTitle");
                     data.artist = player.currentMedia.getItemInfo("WM/AlbumArtist");
+                    data.helpingArtist = player.currentMedia.getItemInfo("Author");
                     data.audiofilepath = player.controls.currentItem.sourceURL;
                     //get filename from the path
                     data.audiofilename = Path.GetFileName(data.audiofilepath);
@@ -255,6 +258,11 @@ namespace Discord_WMP {
             label5.Text = "play_state " + data.play_state.ToString();
             label6.Text = "mediatype " + data.media_type;
             label7.Text = "audiofilename " + data.audiofilename;
+
+            label8.Text = "title " + data.title;
+            label9.Text = "artist " + data.artist;
+            label9.Text = "helpint " + data.helpingArtist;
+            label10.Text = "album " + data.album;
         }
 
         bool initialized = false;
@@ -262,8 +270,9 @@ namespace Discord_WMP {
         Stopwatch pause_stopwatch = new Stopwatch();
         string lastSongPath = "";
 		private void update_Tick(object sender, EventArgs e) {
-            Console.WriteLine("tick");
+            //Console.WriteLine("tick");
             bool wmpConnected = ConnectWmp();
+            showCd = false;
             if(!wmpConnected) {
                 Console.WriteLine("WMP not connected. WMP must be running. (debug: update_Tick() ConnectWmp() returned false))");
                 playeddata = "WMP not connected\nWMP must be running.";
@@ -271,10 +280,14 @@ namespace Discord_WMP {
                 return;
             }
             var data = Data();
+
+            if(data.path.Contains("flac") || data.path.Contains("wav")) {
+                showCd = true;
+            }
             debug(data);
             if(data.lenght_sec == -1 || data.position_sec == -1) {
                 playeddata = "Couldnt find WMP";
-                this.Refresh();
+                //this.Refresh();
             }
             bool stopped = data.play_state.In(WMPLib.WMPPlayState.wmppsStopped, WMPLib.WMPPlayState.wmppsMediaEnded, WMPLib.WMPPlayState.wmppsUndefined);
             if(data.play_state == WMPPlayState.wmppsPaused) {
@@ -299,7 +312,7 @@ namespace Discord_WMP {
                     SongChanged(data);
 				}
 				playeddata = data.artist + " - " + data.title;
-				this.Refresh();
+				//this.Refresh();
 			}
 
             if(subtitle != null) {
@@ -310,8 +323,10 @@ namespace Discord_WMP {
 			}
 
 			HideCaret(richTextBox_lyrics.Handle);
+
 		}
 
+        string lastAlbumArt = "";
         public void SetAlbumArt(playback_data data) {
             string albumartpath = Path.GetDirectoryName(Application.ExecutablePath) + "\\" + "noalbumart2.png";
             string guid = data.guid;
@@ -340,7 +355,10 @@ namespace Discord_WMP {
                 Console.WriteLine("no album art found, using default");
 			}
 
-            pictureBox1.Image = Image.FromFile(albumartpath);
+            if(albumartpath != lastAlbumArt) {
+                pictureBox1.Image = Image.FromFile(albumartpath);
+            }
+            lastAlbumArt = albumartpath;
         }
         Subtitle subtitle;
         public void SongChanged(playback_data data) {
@@ -359,11 +377,64 @@ namespace Discord_WMP {
 				richTextBox_lyrics.Text = data.artist + " - " + data.title;
 			}
 
-            label_song.Text = data.title;
-			label_kapela.Text = data.artist;
-			label_album.Text = data.album;
+            //label_song.Text = data.title;
+			//label_kapela.Text = data.artist;
+			//label_album.Text = data.album;
 
-			string txtpath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".txt";
+			string metapath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".meta.csv";
+            if(File.Exists(metapath)) {
+                //parse the csv. if csv has key "Artist", set its value to label_kapela, and //if csv has key "Album", set its value to label_album, and if csv has key "Title", set its value to label_song
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                Console.WriteLine("found meta csv");
+                string[] lines = File.ReadAllLines(metapath);
+                foreach(string line in lines) {
+                    string[] parts = line.Split(';');
+                    if(parts.Length < 2) continue; // skip if line is not valid
+                    string key = parts[0].Trim();
+                    string value = parts[1].Trim();
+                    switch(key.ToLower()) {
+                        case "artist":
+                            label_kapela.Text = value.UnicodeFix();
+                            Console.WriteLine("set kapela based on csv");
+                            break;
+                        case "album":
+                            label_album.Text = value.UnicodeFix();
+							Console.WriteLine("set album based on csv");
+							break;
+                        case "title":
+                            label_song.Text = value.UnicodeFix();
+							Console.WriteLine("set nazev based on csv");
+							break;
+                        default:
+                            Console.WriteLine($"Unknown key in meta csv: {key}");
+                            break;
+                    }
+                }
+            }
+
+			string txtpath = Path.GetDirectoryName(filepath) + "\\" + Path.GetFileNameWithoutExtension(filepath) + ".pick";
 			if(File.Exists(txtpath)) {
 				Console.WriteLine("found vybirac songu txt");
 				string txt = File.ReadAllText(txtpath);
@@ -392,15 +463,57 @@ namespace Discord_WMP {
             label_tlyrics.Top = 312 + pictureBoxSizeDif;
 			richTextBox_lyrics.Top = 320 + pictureBoxSizeDif;
 
-            richTextBox_lyrics.Height = this.Height - 354 - pictureBoxSizeDif;
+            richTextBox_lyrics.Height = this.Height - 380 - pictureBoxSizeDif;
+            richTextBox_lyrics.Width = width - 48;
 
 
 
 
 		}
-	}
-	//create new class for extension method
-	public static class ExtensionMethods {
+
+        int gifFrame = 0;
+        bool showCd = true;
+        bool showCdLast = true;
+        List<Bitmap> frames;
+
+        private void drawCd() {
+            if(frames == null) {
+                // Load cd1.png, cd2.png, and cd3.png, which are next to the exe
+                frames = new List<Bitmap>();
+                for(int i = 1; i <= 3; i++) {
+                    string path = Path.GetDirectoryName(Application.ExecutablePath) + $"\\cd{i}.png";
+                    if(File.Exists(path)) {
+                        frames.Add(new Bitmap(path));
+                    }
+                }
+            }
+            if(showCd) {
+                var g = pictureBox1.CreateGraphics();
+                // Draw the current frame
+                if(showCd && frames.Count > 0) {
+                    g.DrawImage(frames[gifFrame], new Rectangle(0, 0, 64, 64));
+                    gifFrame = (gifFrame + 1) % frames.Count;
+                }
+            }
+            if(showCdLast == true && showCd == false) {
+                pictureBox1.Refresh();
+                Console.WriteLine("Refreshing picture box because cd last was true and show cd false");
+            }
+            showCdLast = showCd;
+        }
+
+        private void timer_cd_Tick(object sender, EventArgs e) {
+            //Console.WriteLine("CD Draw tick");
+            drawCd();
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e) {
+            //Console.WriteLine("picture box paint");
+            drawCd();
+        }
+    }
+    //create new class for extension method
+    public static class ExtensionMethods {
         public static string Truncate(this string value, int maxChars) {
             return value.Length <= maxChars ? value : value.Substring(0, maxChars);
         }
@@ -411,5 +524,22 @@ namespace Discord_WMP {
 		public static bool In<T>(this T obj, params T[] args) {
 			return args.Contains(obj);
 		}
+
+        public static string UnicodeFix(this string text) {
+            Dictionary<string, string> replacements = new Dictionary<string, string> {
+                { "├í", "á" },
+                { "┼í", "š" },
+                { "─Ť", "ě" },
+                {"├Ż", "ý"},
+                {"├ę", "é"},
+                {"┼ż", "ž"},
+            };
+
+            foreach (var replacement in replacements) {
+                text = text.Replace(replacement.Key, replacement.Value);
+            }
+
+            return text;
+        }
 	}
 }

@@ -52,6 +52,10 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=30.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.30.0.3\lib\net48\CsvHelper.dll</HintPath>
@@ -121,6 +125,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Remote_WMP_Lib.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Settings1.Designer.cs">
@@ -135,6 +144,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -185,9 +195,15 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="imageres_85.ico" />
+    <None Include="Resources\icegif-1617.gif" />
+    <Content Include="WMP Lyrics.ico" />
+    <Content Include="wmploc_464.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>rm "$(ProjectDir)\CurrentCommit.txt"
-git rev-parse --short HEAD &gt; "$(ProjectDir)\CurrentCommit.txt"</PreBuildEvent>
+    <PreBuildEvent>REM rm "$(ProjectDir)\CurrentCommit.txt"
+REM git rev-parse --short HEAD &gt; "$(ProjectDir)\CurrentCommit.txt"</PreBuildEvent>
   </PropertyGroup>
 </Project>
